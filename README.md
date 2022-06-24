@@ -1,6 +1,6 @@
 # Clines API
 
-Clines API is the backend of **C Aero linhas**. It allows the customer to buy flight reservations and 
+Clines API is the backend of **C Aero Lines**. It allows the customer to buy flight reservations and 
 backoffice user to management flights, airport and aircraft.
 
 
