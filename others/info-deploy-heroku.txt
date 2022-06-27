@@ -1,0 +1,79 @@
+Deploy com Heroku
+
+instalar heroku cli
+
+heroku --version
+
+heroku login
+
+login docker --username= --password=$(heroku auth:token)
+regisry.heroku.com
+
+Criar aplicação no heroku
+heroku create williammian-clines-teste
+
+Adicionar plugin para postgres no heroku
+heroku addons:create heroku-postgresql:hobby-dev
+
+endereço do banco de dados postgreSQL que o Heroku criou é:
+DATABASE URL: postgres://nrlzxvmsldkqhz:4elc9ca104b593d02211cda122c07c591075f92391106cc6550ca4c1d85e51fe@ec2-18-211-97-89.compute-1.amazonaws.com:5432/d8120kscq030oj
+
+Criar variáveis de ambiente
+heroku config:set DB_USER=nrlzxvmsldkqhz
+heroku config:set DB_PASSWORD=4elc9ca104b593d02211cda122c07c591075f92391106cc6550ca4c1d85e51fe
+heroku config:set DB_HOST=ec2-18-211-97-89.compute-1.amazonaws.com
+heroku config:set DB_NAME=d8120kscq030oj
+
+----------------------------------------------------
+
+No Dockerfile
+
+CMD java -XX:+UseContainerSupport -Xmx512m -jar app.jar --server.port=$PORT
+
+----------------------------------------------------
+
+Precisamos dar um outro nome para a imagem Docker. Antes usávamos williammian/clines-api:latest que é a última versão disponível, mas, temos que apelidá-la, seguindo a convenção do Heroku que é
+
+registry.heroku.com/williammian-clines-teste/web:1
+
+----------------------------------------------------
+
+Isto é, registry.heroku.com/seguido do nome da aplicação /web: seguido da versão. Para que ele dê esse apelido, precisamos rodar o comando:
+
+docker image tag williammian/clines-api:latest registry.heroku.com/williammian-clines-teste/web:1
+
+----------------------------------------------------
+
+A etapa seguinte é fazer o Push: pegar a imagem local - a que está na nossa máquina - fazer um Push e enviar para o Registry do Heroku. Para isso, copiaremos, do editor de texto, a linha
+
+docker image push registry.heroku.com/williammian-clines-teste/web:1
+
+----------------------------------------------------
+
+Perceba que, no nosso editor de texto, depois do Push, temos o comando:
+
+docker image inspect registry.heroku.com/alura-clines-teste/web:1 -f{{.Id}}
+
+----------------------------------------------------
+
+Perceba também que, no final, ele forneceu um sha256 que é o ID da nossa imagem:
+
+sha256:29bf8dfc55d5b486e75bf362139b698f63d8f7171a8af53b8849c8a331211f3a
+
+---------------------------------------------------
+
+curl -X PATCH \
+					-H "Authorization: Bearer $(heroku auth:token)" \
+					-H "Content-Type: application/json" \
+					-H "Accept:application/vnd.heroku+json;version=3.docker.releases" \
+					-d '{ "updates": [{"type": "web", "docker_image": 
+sha256:29bf8dfc55d5b486e75bf362139b698f63d8f7171a8af53b8849c8a331211f3a"}] \
+					https://api.heroku.com/apps/williammian-clines-teste/formation
+					
+----------------------------------------------------
+
+
+					
+
+
+
