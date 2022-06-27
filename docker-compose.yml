@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  database:
+    image: postgres
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "${DB_NAME}", "-U", "${DB_USER}" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: clines
+    volumes:
+    - db-volume:/var/lib/postgresql/data
+
+  api:
+    image: williammian/clines-api
+    environment:
+      DB_HOST: database
+    ports:
+      - "8080:8080"
+    depends_on:
+      database:
+        condition: service_healthy
+        
+volumes:
+  db-volume:
