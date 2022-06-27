@@ -1,0 +1,41 @@
+Automatização
+
+1. Build da aplicação (Maven)
+
+2. Build da imagem (Docker)
+
+3. Executar containers (Docker Compose)
+
+---------------------------------------------
+
+Criar arquivo Makefile na pasta da aplicação
+
+package:
+	@ mvn clean package
+	
+docker-image-build: package
+	@ docker build -t williammian/clines-api .
+
+run: docker-image-build
+	@ docker-compose up -d
+
+stop: 
+	@ docker-compose down -v
+	
+----------------------------------------------
+
+make run
+
+----------------------------------------------
+
+Manual Make
+
+https://www.gnu.org/software/make/manual/make.html
+
+----------------------------------------------
+
+Ferramentas que substituem o Makefile
+
+Ant, Maven, QMake, Cargo, Elm
+
+-----------------------------------------------
